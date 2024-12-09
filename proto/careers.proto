@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package careers;
+
+service CareerService {
+    rpc GetAll (GetAllRequest) returns (GetAllResponse) {}
+}
+
+message GetAllRequest {}
+
+message Career {
+    string id = 1;
+    string name = 2;
+}
+
+message GetAllResponse {
+    repeated Career careers = 1;
+}
