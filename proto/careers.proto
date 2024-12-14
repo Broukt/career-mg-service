@@ -3,16 +3,72 @@ syntax = "proto3";
 package careers;
 
 service CareerService {
-    rpc GetAll (GetAllRequest) returns (GetAllResponse) {}
+  rpc GetAll(GetAllRequest) returns (GetAllResponse) {}
 }
 
 message GetAllRequest {}
 
 message Career {
-    string id = 1;
-    string name = 2;
+  string id = 1;
+  string name = 2;
 }
 
-message GetAllResponse {
-    repeated Career careers = 1;
+message GetAllResponse { repeated Career careers = 1; }
+
+service SubjectsService {
+  rpc GetAllSubjects(GetAllSubjectsRequest) returns (GetAllSubjectsResponse) {}
+  rpc GetAllRelationships(GetAllRelationshipsRequest)
+      returns (GetAllRelationshipsResponse) {}
+  rpc GetPrerequisitesMap(GetPrerequisitesMapRequest)
+      returns (GetPrerequisitesMapResponse) {}
+  rpc GetPostrequisitesMap(GetPostrequisitesMapRequest)
+      returns (GetPostrequisitesMapResponse) {}
+}
+
+// Requests (typically empty for these read operations)
+message GetAllSubjectsRequest {}
+message GetAllRelationshipsRequest {}
+message GetPrerequisitesMapRequest {}
+message GetPostrequisitesMapRequest {}
+
+// Subject data structure
+message Subject {
+  string id = 1;
+  string code = 2;
+  string name = 3;
+  string department = 4;
+  int32 credits = 5;
+  int32 semester = 6;
+}
+
+// Subject relationship object
+message SubjectRelationship {
+  string id = 1;
+  string subject_code = 2;
+  string prerequisite_code = 3;
+}
+
+// Responses
+message GetAllSubjectsResponse { repeated Subject subjects = 1; }
+
+message GetAllRelationshipsResponse {
+  repeated SubjectRelationship relationships = 1;
+}
+
+message GetPrerequisitesMapResponse {
+  repeated PrerequisiteEntry prerequisites = 1;
+}
+
+message PrerequisiteEntry {
+  string key = 1;
+  repeated string codes = 2;
+}
+
+message GetPostrequisitesMapResponse {
+  repeated PostrequisiteEntry postrequisites = 1;
+}
+
+message PostrequisiteEntry {
+  string key = 1;
+  repeated string codes = 2;
 }
