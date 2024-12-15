@@ -2,13 +2,14 @@ require("dotenv").config();
 const grpc = require("@grpc/grpc-js");
 const createServer = require("./server");
 const { connectMongo, closeMongo } = require("./db/mongoClient");
+const { seed } = require('./db/seeder');
 const { GRPC_SERVER_ADDRESS } = require("./config");
 
 (async function main() {
   try {
     await connectMongo();
+    await seed();
     const server = createServer();
-    console.log(server);
     server.bindAsync(
       GRPC_SERVER_ADDRESS,
       grpc.ServerCredentials.createInsecure(),
