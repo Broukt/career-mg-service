@@ -1,12 +1,12 @@
 const { fetchAllCareers } = require("../services/careersService");
 
 const careersHandler = {
-  async GetAll(call, callback) {
+  async GetAllCareers(call, callback) {
     try {
       const careers = await fetchAllCareers();
       callback(null, { careers });
     } catch (error) {
-      console.error("Error in GetAll:", error);
+      console.error("Error in GetAllCareers:", error);
       callback(error, null);
     }
   },
