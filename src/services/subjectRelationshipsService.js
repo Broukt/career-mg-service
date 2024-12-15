@@ -1,38 +1,52 @@
 const {
   getAllRelationships,
-  getPrerequisitesForEverySubject,
-  getPostrequisitesForEverySubject,
 } = require("../repositories/subjectRelationshipsRepository");
 
 async function fetchAllRelationships() {
-    const relationships = await getAllRelationships();
-
-    return relationships.map((r) => ({
-        subject_code: r.subject_code,
-        prerequisite_code: r.prerequisite_code,
-        id: r._id,
-    }));
-}
-
-async function fetchPrerequisitesPerSubject() {
-    const prerequisitesPerSubject = await getPrerequisitesForEverySubject();
-
-    return prerequisitesPerSubject.map((p) => ({
-        
-    }))
-}
-
-async function fetchAllSubjects() {
-  const subjects = await getAllSubjects();
-
-  return subjects.map((s) => ({
-    id: s._id.toString(),
-    code: s.code,
-    name: s.name,
-    department: s.department,
-    credits: s.credits,
-    semester: s.semester,
+  const relationships = await getAllRelationships();
+  return relationships.map((r) => ({
+    id: r._id,
+    subjectCode: r.subject_code,
+    prerequisiteCode: r.prerequisite_code,
   }));
 }
 
-module.exports = { fetchAllSubjects };
+async function fetchPrerequisitesPerSubject() {
+  const relationships = await getAllRelationships();
+  const prerequisitesPerSubject = relationships.reduce((acc, r) => {
+    if (!acc[r.subject_code]) {
+      acc[r.subject_code] = [];
+    }
+
+    acc[r.subject_code].push(r.prerequisite_code);
+
+    return acc;
+  }, {});
+  return Object.keys(prerequisitesPerSubject).map((subjectCode) => ({
+    subjectCode,
+    prerequisiteCodes: prerequisitesPerSubject[subjectCode],
+  }));
+}
+
+async function fetchPostrequisitesPerSubject() {
+  const relationships = await getAllRelationships();
+  const postrequisitesPerSubject = relationships.reduce((acc, r) => {
+    if (!acc[r.prerequisite_code]) {
+      acc[r.prerequisite_code] = [];
+    }
+
+    acc[r.prerequisite_code].push(r.subject_code);
+
+    return acc;
+  }, {});
+  return Object.keys(postrequisitesPerSubject).map((subjectCode) => ({
+    subjectCode,
+    postrequisiteCodes: postrequisitesPerSubject[subjectCode],
+  }));
+}
+
+module.exports = {
+  fetchAllRelationships,
+  fetchPrerequisitesPerSubject,
+  fetchPostrequisitesPerSubject,
+};
