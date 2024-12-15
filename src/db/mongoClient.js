@@ -9,6 +9,15 @@ async function connectMongo() {
     client = new MongoClient(MONGO_URI);
     await client.connect();
     db = client.db(DATABASE_NAME);
+    if (db.collection("subjects"))
+      db.dropCollection("subjects");
+    if (db.collection("subjectRelationships"))
+      db.dropCollection("subjectRelationships");
+    if (db.collection("careers"))
+      db.dropCollection("careers");
+    db.createCollection("subjects");
+    db.createCollection("subjectRelationships");
+    db.createCollection("careers");
     console.log("Connected to MongoDB");
   }
   return db;
